@@ -1,0 +1,5 @@
+{
+  "name": "Personal Resume Studio",
+  "description": "A local-first resume generator with material management, versioning, real-time preview, and PDF export.",
+  "requestFramePermissions": []
+}

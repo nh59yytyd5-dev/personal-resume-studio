@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+:root {
+  color: #1f2937;
+  background:
+    radial-gradient(circle at top left, rgba(251, 191, 36, 0.18), transparent 28%),
+    radial-gradient(circle at top right, rgba(180, 83, 9, 0.12), transparent 22%),
+    linear-gradient(180deg, #f8f4eb 0%, #f3f6fa 100%);
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: transparent;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.editor-panel {
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.82);
+  border-radius: 32px;
+  padding: 1.5rem;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.07);
+  backdrop-filter: blur(18px);
+}
+
+.resume-paper {
+  width: 100%;
+  max-width: 210mm;
+  margin: 0 auto;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 28px;
+  background: #fff;
+  padding: 2rem;
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.12);
+}
+
+.resume-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.resume-section {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.resume-section + .resume-section {
+  margin-top: 1.85rem;
+}
+
+.resume-section-title {
+  margin-bottom: 1rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1.5px solid #0f172a;
+  color: #0f172a;
+  font-family: "Songti SC", "STSong", "Noto Serif CJK SC", serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.resume-tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: #f8ecd3;
+  color: #9a5b0b;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .resume-paper {
+    padding: 1.25rem;
+    border-radius: 22px;
+  }
+
+  .resume-header {
+    flex-direction: column;
+  }
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  :root {
+    background: #fff;
+  }
+
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    background: #fff;
+  }
+
+  .resume-paper {
+    max-width: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+  }
+}
