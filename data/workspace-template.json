@@ -1,0 +1,101 @@
+{
+  "basics": {
+    "name": "示例候选人",
+    "title": "前端 / 全栈 / AI 应用工程师",
+    "photo": "",
+    "email": "name@example.com",
+    "phone": "(+86) 138-0000-0000",
+    "location": "上海 / 中国",
+    "website": "your-site.dev",
+    "github": "github.com/yourname",
+    "linkedin": "linkedin.com/in/yourname",
+    "summary": "专注于把产品需求拆解成可落地的软件能力，覆盖前端体验、后端接口、数据结构和 AI 应用集成。擅长快速搭建可交付原型，并把零散素材整理成清晰、稳定、可复用的工作流。"
+  },
+  "education": [
+    {
+      "id": "edu-scut-law",
+      "school": "示例大学",
+      "degree": "计算机科学与技术 - 本科",
+      "period": "2020.09 - 2024.06",
+      "description": "核心课程：数据结构、操作系统、数据库、软件工程。可在这里补充 GPA、奖项、课程项目或研究方向。"
+    }
+  ],
+  "skills": [
+    {
+      "id": "skill-ai",
+      "name": "AI 应用",
+      "content": "Prompt Engineering、RAG、Function Calling、Agent Workflow，可对接主流模型 API。"
+    },
+    {
+      "id": "skill-dev",
+      "name": "工程开发",
+      "content": "TypeScript、React、Node.js、Python、REST API、数据库建模。"
+    },
+    {
+      "id": "skill-tools",
+      "name": "工具链",
+      "content": "Vite、Tailwind CSS、Git、Docker、Playwright、自动化脚本。"
+    },
+    {
+      "id": "skill-cross",
+      "name": "协作与交付",
+      "content": "需求拆解、文档编写、跨角色协同、结果复盘与流程沉淀。"
+    }
+  ],
+  "projects": [
+    {
+      "id": "project-rag-law",
+      "name": "个人简历生成器",
+      "role": "独立开发",
+      "period": "2025.02 - 2025.03",
+      "highlights": "基于 React 与 Vite 构建本地优先的简历工作台，支持素材管理、版本切换、实时预览与 PDF 导出。\n将个人资料、项目、经历、补充素材抽象成统一工作区数据结构，支持 JSON 导入导出。\n通过 print CSS 优化 A4 输出效果，减少浏览器打印时的版式偏移。\n为公开仓库补齐 README、LICENSE 和隐私说明，降低二次使用成本。"
+    },
+    {
+      "id": "project-multi-agent",
+      "name": "内部知识库问答助手",
+      "role": "核心开发者",
+      "period": "2024.08 - 2024.12",
+      "highlights": "搭建知识清洗、分块、索引和问答链路，帮助团队快速检索内部文档与规范。\n设计召回与提示词策略，提升回答相关性与结构化输出质量。\n补充后台配置与日志能力，方便持续迭代模型参数和知识源。"
+    }
+  ],
+  "experience": [
+    {
+      "id": "exp-legal-center",
+      "company": "示例科技公司",
+      "position": "产品工程实习生",
+      "period": "2024.03 - 2024.09",
+      "highlights": "参与多个内部工具从需求梳理到交付上线的全过程，覆盖前端页面、接口联调与反馈修复。\n推动重复工作脚本化，减少手动整理和格式转换的时间成本。"
+    }
+  ],
+  "materials": [
+    {
+      "id": "material-law-retrieval",
+      "title": "架构思考",
+      "category": "补充素材",
+      "content": "习惯先抽象数据结构和工作流，再决定 UI 与导出方式，降低后续扩展的重构成本。"
+    },
+    {
+      "id": "material-writing",
+      "title": "协作方式",
+      "category": "能力标签",
+      "content": "能把零散需求整理成明确的任务边界、验收口径和交付文档，减少沟通损耗。"
+    }
+  ],
+  "variants": [
+    {
+      "id": "variant-general",
+      "name": "通用投递版",
+      "headline": "前端 / 全栈 / AI 应用工程师",
+      "summary": "专注于把产品需求拆解成可落地的软件能力，覆盖前端体验、后端接口、数据结构和 AI 应用集成。擅长快速搭建可交付原型，并把零散素材整理成清晰、稳定、可复用的工作流。",
+      "educationIds": ["edu-scut-law"],
+      "skillIds": ["skill-ai", "skill-dev", "skill-tools", "skill-cross"],
+      "projectIds": ["project-rag-law", "project-multi-agent"],
+      "experienceIds": ["exp-legal-center"],
+      "materialIds": ["material-law-retrieval"],
+      "projectOverrides": {},
+      "experienceOverrides": {}
+    }
+  ],
+  "activeVariantId": "variant-general",
+  "updatedAt": "2026-03-28T00:00:00.000Z"
+}

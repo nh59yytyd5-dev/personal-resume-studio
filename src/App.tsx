@@ -494,6 +494,7 @@ export default function App() {
               <p className="mt-3 text-sm leading-7 text-slate-600 sm:text-base">
                 这版支持本地保存个人素材、维护多个投递版本、实时预览，并支持一键下载 PDF 或浏览器打印。
                 数据默认保存在当前浏览器的本地存储，也可以随时导入导出 JSON 备份。
+                如果你使用 agent CLI，默认 workspace 会写到 `.local/resume-workspace.json`，再通过导入 JSON 同步到界面。
               </p>
             </div>
 
@@ -1002,18 +1003,28 @@ export default function App() {
                   <div className="space-y-6">
                     {selectedProjects.map((item) => (
                       <div key={item.id}>
+                        {(() => {
+                          const override = activeVariant.projectOverrides?.[item.id] ?? {};
+                          const role = override.role || item.role;
+                          const highlights = override.highlights || item.highlights;
+
+                          return (
+                            <>
                         <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
                           <h3 className="text-lg font-semibold text-slate-950">{item.name}</h3>
                           <span className="text-sm font-medium text-slate-500">{item.period}</span>
                         </div>
-                        {item.role && <p className="mt-1 text-sm font-medium text-amber-800">{item.role}</p>}
+                        {role && <p className="mt-1 text-sm font-medium text-amber-800">{role}</p>}
                         <ul className="mt-3 space-y-2 pl-5 text-sm leading-7 text-slate-700">
-                          {splitMultilineText(item.highlights).map((line, index) => (
+                          {splitMultilineText(highlights).map((line, index) => (
                             <li key={`${item.id}-${index}`} className="list-disc">
                               {line}
                             </li>
                           ))}
                         </ul>
+                            </>
+                          );
+                        })()}
                       </div>
                     ))}
                   </div>
@@ -1026,18 +1037,28 @@ export default function App() {
                   <div className="space-y-6">
                     {selectedExperience.map((item) => (
                       <div key={item.id}>
+                        {(() => {
+                          const override = activeVariant.experienceOverrides?.[item.id] ?? {};
+                          const position = override.position || item.position;
+                          const highlights = override.highlights || item.highlights;
+
+                          return (
+                            <>
                         <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
                           <h3 className="text-lg font-semibold text-slate-950">{item.company}</h3>
                           <span className="text-sm font-medium text-slate-500">{item.period}</span>
                         </div>
-                        {item.position && <p className="mt-1 text-sm font-medium text-amber-800">{item.position}</p>}
+                        {position && <p className="mt-1 text-sm font-medium text-amber-800">{position}</p>}
                         <ul className="mt-3 space-y-2 pl-5 text-sm leading-7 text-slate-700">
-                          {splitMultilineText(item.highlights).map((line, index) => (
+                          {splitMultilineText(highlights).map((line, index) => (
                             <li key={`${item.id}-${index}`} className="list-disc">
                               {line}
                             </li>
                           ))}
                         </ul>
+                            </>
+                          );
+                        })()}
                       </div>
                     ))}
                   </div>

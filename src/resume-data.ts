@@ -48,6 +48,16 @@ export type MaterialItem = {
   content: string;
 };
 
+export type ProjectOverride = {
+  role?: string;
+  highlights?: string;
+};
+
+export type ExperienceOverride = {
+  position?: string;
+  highlights?: string;
+};
+
 export type ResumeVariant = {
   id: string;
   name: string;
@@ -58,6 +68,8 @@ export type ResumeVariant = {
   projectIds: string[];
   experienceIds: string[];
   materialIds: string[];
+  projectOverrides: Record<string, ProjectOverride>;
+  experienceOverrides: Record<string, ExperienceOverride>;
 };
 
 export type ResumeWorkspace = {
@@ -188,6 +200,8 @@ const defaultVariants: ResumeVariant[] = [
     projectIds: defaultProjects.map((item) => item.id),
     experienceIds: defaultExperience.map((item) => item.id),
     materialIds: ['material-law-retrieval'],
+    projectOverrides: {},
+    experienceOverrides: {},
   },
 ];
 
@@ -273,6 +287,8 @@ export function createVariant(workspace: ResumeWorkspace, name: string): ResumeV
     projectIds: workspace.projects.map((item) => item.id),
     experienceIds: workspace.experience.map((item) => item.id),
     materialIds: [],
+    projectOverrides: {},
+    experienceOverrides: {},
   };
 }
 
@@ -349,6 +365,50 @@ function sanitizeIds(ids: string[], validIds: string[]) {
   return ids.filter((id) => validIds.includes(id));
 }
 
+function normalizeProjectOverrides(value: unknown, validIds: string[]) {
+  if (!isRecord(value)) return {};
+
+  const result: Record<string, ProjectOverride> = {};
+
+  for (const [key, override] of Object.entries(value)) {
+    if (!validIds.includes(key) || !isRecord(override)) continue;
+
+    const role = getString(override.role).trim();
+    const highlights = getString(override.highlights).trim();
+
+    if (!role && !highlights) continue;
+
+    result[key] = {
+      ...(role ? {role} : {}),
+      ...(highlights ? {highlights} : {}),
+    };
+  }
+
+  return result;
+}
+
+function normalizeExperienceOverrides(value: unknown, validIds: string[]) {
+  if (!isRecord(value)) return {};
+
+  const result: Record<string, ExperienceOverride> = {};
+
+  for (const [key, override] of Object.entries(value)) {
+    if (!validIds.includes(key) || !isRecord(override)) continue;
+
+    const position = getString(override.position).trim();
+    const highlights = getString(override.highlights).trim();
+
+    if (!position && !highlights) continue;
+
+    result[key] = {
+      ...(position ? {position} : {}),
+      ...(highlights ? {highlights} : {}),
+    };
+  }
+
+  return result;
+}
+
 export function normalizeWorkspace(value: unknown): ResumeWorkspace {
   if (!isRecord(value)) {
     return cloneWorkspace(defaultWorkspace);
@@ -411,6 +471,8 @@ export function normalizeWorkspace(value: unknown): ResumeWorkspace {
             projectIds: sanitizeIds(getStringArray(item.projectIds), validProjectIds),
             experienceIds: sanitizeIds(getStringArray(item.experienceIds), validExperienceIds),
             materialIds: sanitizeIds(getStringArray(item.materialIds), validMaterialIds),
+            projectOverrides: normalizeProjectOverrides(item.projectOverrides, validProjectIds),
+            experienceOverrides: normalizeExperienceOverrides(item.experienceOverrides, validExperienceIds),
           } satisfies ResumeVariant;
         })
         .filter((item): item is ResumeVariant => item !== null)
@@ -429,6 +491,8 @@ export function normalizeWorkspace(value: unknown): ResumeWorkspace {
           projectIds: validProjectIds,
           experienceIds: validExperienceIds,
           materialIds: [],
+          projectOverrides: {},
+          experienceOverrides: {},
         },
       ];
 
