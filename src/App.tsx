@@ -152,10 +152,17 @@ function linkifyContact(value: string) {
   return `https://${value}`;
 }
 
+function toFilenamePart(value: string, fallback: string) {
+  const sanitized = value.trim().replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, '-');
+  return sanitized || fallback;
+}
+
 export default function App() {
   const [workspace, setWorkspace] = useState<ResumeWorkspace>(getInitialWorkspace);
   const [flashMessage, setFlashMessage] = useState('本地自动保存已开启。');
+  const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const resumePaperRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(workspace));
@@ -409,6 +416,63 @@ export default function App() {
     setFlashMessage('已恢复示例工作区。');
   };
 
+  const downloadPdf = async () => {
+    if (!resumePaperRef.current || isDownloadingPdf) return;
+
+    try {
+      setIsDownloadingPdf(true);
+      setFlashMessage('正在生成 PDF...');
+
+      const [{default: html2canvas}, {jsPDF}] = await Promise.all([
+        import('html2canvas'),
+        import('jspdf'),
+      ]);
+
+      const canvas = await html2canvas(resumePaperRef.current, {
+        scale: Math.min(window.devicePixelRatio || 1, 2),
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        windowWidth: resumePaperRef.current.scrollWidth,
+        windowHeight: resumePaperRef.current.scrollHeight,
+      });
+
+      const imageData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+        compress: true,
+      });
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imageHeight = (canvas.height * pageWidth) / canvas.width;
+
+      let heightLeft = imageHeight;
+      let position = 0;
+
+      pdf.addImage(imageData, 'PNG', 0, position, pageWidth, imageHeight, undefined, 'FAST');
+      heightLeft -= pageHeight;
+
+      while (heightLeft > 0) {
+        position = heightLeft - imageHeight;
+        pdf.addPage();
+        pdf.addImage(imageData, 'PNG', 0, position, pageWidth, imageHeight, undefined, 'FAST');
+        heightLeft -= pageHeight;
+      }
+
+      const filename = `${toFilenamePart(workspace.basics.name, 'resume')}-${toFilenamePart(activeVariant.name, 'variant')}.pdf`;
+      pdf.save(filename);
+      setFlashMessage('PDF 已下载。');
+    } catch (error) {
+      console.error(error);
+      setFlashMessage('PDF 生成失败。若使用了外链图片，请确认它支持跨域访问后重试。');
+    } finally {
+      setIsDownloadingPdf(false);
+    }
+  };
+
   return (
     <div className="min-h-screen px-4 py-5 text-slate-800 sm:px-6 lg:px-8 print:bg-white print:p-0">
       <input
@@ -428,7 +492,7 @@ export default function App() {
                 把模板升级成你自己的简历生成器
               </h1>
               <p className="mt-3 text-sm leading-7 text-slate-600 sm:text-base">
-                这版支持本地保存个人素材、维护多个投递版本、实时预览，并通过浏览器打印生成 PDF。
+                这版支持本地保存个人素材、维护多个投递版本、实时预览，并支持一键下载 PDF 或浏览器打印。
                 数据默认保存在当前浏览器的本地存储，也可以随时导入导出 JSON 备份。
               </p>
             </div>
@@ -448,11 +512,22 @@ export default function App() {
               </button>
               <button
                 type="button"
+                onClick={downloadPdf}
+                disabled={isDownloadingPdf}
+                className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition ${
+                  isDownloadingPdf ? 'cursor-progress bg-slate-500' : 'bg-slate-950 hover:-translate-y-0.5 hover:bg-slate-800'
+                }`}
+              >
+                <FileDown className="h-4 w-4" />
+                {isDownloadingPdf ? '生成 PDF...' : '下载 PDF'}
+              </button>
+              <button
+                type="button"
                 onClick={() => window.print()}
-                className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-5 py-2.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800"
+                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-950"
               >
                 <Printer className="h-4 w-4" />
-                打印 / 导出 PDF
+                打印
               </button>
             </div>
           </div>
@@ -812,17 +887,30 @@ export default function App() {
           <aside className="xl:sticky xl:top-6 xl:self-start">
             <div className="mb-4 flex items-center justify-between rounded-[24px] border border-white/70 bg-white/75 px-4 py-3 text-sm text-slate-600 shadow-[0_20px_60px_rgba(15,23,42,0.06)] backdrop-blur print:hidden">
               <span className="font-medium text-slate-900">实时预览</span>
-              <button
-                type="button"
-                onClick={() => window.print()}
-                className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 font-medium text-white transition hover:bg-slate-800"
-              >
-                <FileDown className="h-4 w-4" />
-                导出 PDF
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={downloadPdf}
+                  disabled={isDownloadingPdf}
+                  className={`inline-flex items-center gap-2 rounded-full px-4 py-2 font-medium text-white transition ${
+                    isDownloadingPdf ? 'cursor-progress bg-slate-500' : 'bg-slate-900 hover:bg-slate-800'
+                  }`}
+                >
+                  <FileDown className="h-4 w-4" />
+                  {isDownloadingPdf ? '生成中' : '下载 PDF'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 font-medium text-slate-700 transition hover:border-slate-300 hover:text-slate-950"
+                >
+                  <Printer className="h-4 w-4" />
+                  打印
+                </button>
+              </div>
             </div>
 
-            <div className="resume-paper">
+            <div ref={resumePaperRef} className="resume-paper">
               <header className="resume-header resume-section">
                 <div className="flex-1">
                   <div className="space-y-2">
