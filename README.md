@@ -1,6 +1,6 @@
 # Personal Resume Studio
 
-A local-first resume generator for personal use. It lets you save profile data and reusable resume materials, maintain multiple application variants, preview the result in real time, and export PDF via the browser print flow.
+A local-first resume generator for personal use. It lets you save profile data and reusable resume materials, maintain multiple application variants, preview the result in real time, download PDF with one click, and fall back to browser print when needed.
 
 ![Personal Resume Studio preview](./.github/assets/app-preview.png)
 
